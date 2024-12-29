@@ -6,6 +6,7 @@ import {
   initialNumberGrid,
   validationRules,
 } from "./SudokuPuzzle.const";
+import restrictToSingleDigit from "../../utils/restrictToSingleDigit";
 
 function SudokuPuzzle(): JSX.Element {
   /* -------------------------------------------------------------------------- */
@@ -149,7 +150,42 @@ function SudokuPuzzle(): JSX.Element {
     if (clearErrors) refreshInvalidCells();
   }
 
-  return <div>SudokuPuzzle</div>;
+  return (
+    <div className="flex flex-col bg-sky-200 w-[586px]">
+      {cellStatus.map((row, indexRow) => (
+        <div key={indexRow} className="flex flex-row">
+          {row.map((column, indexColumn) => (
+            <div
+              key={`${indexRow}-${indexColumn}`}
+              className="flex flex-wrap box-border border-2 border-black divide-x divide-y divide-gray-600"
+            >
+              {column.map((innerCell, indexInnerCell) => (
+                <input
+                  key={`${indexRow}-${indexColumn}-${indexInnerCell}`}
+                  disabled={innerCell.changeable}
+                  type="text"
+                  value={numberGrid[indexRow][indexColumn][indexInnerCell]}
+                  onChange={(event) => {
+                    restrictToSingleDigit(event);
+                    validateAndUpdateCell(
+                      indexRow,
+                      indexColumn,
+                      indexInnerCell,
+                      event.target.value,
+                      true
+                    );
+                  }}
+                  className={`h-16 w-16 text-center text-2xl ${
+                    !innerCell.status && "bg-red-400"
+                  }`}
+                />
+              ))}
+            </div>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
 }
 
 export default SudokuPuzzle;
