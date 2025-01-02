@@ -176,7 +176,7 @@ function SudokuPuzzle(): JSX.Element {
                       true,
                     );
                   }}
-                  className={`h-16 w-16 text-center text-3xl ${
+                  className={`h-[64px] w-[64px] text-center text-3xl ${
                     innerCell.changeable && "font-bold"
                   } ${
                     !innerCell.status &&
