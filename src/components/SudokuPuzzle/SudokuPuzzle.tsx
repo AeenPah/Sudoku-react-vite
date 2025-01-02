@@ -152,7 +152,7 @@ function SudokuPuzzle(): JSX.Element {
   }
 
   return (
-    <div className="flex w-[586px] flex-col bg-sky-200">
+    <div className="flex w-[590px] flex-col bg-sky-200">
       {cellStatus.map((row, indexRow) => (
         <div key={indexRow} className="flex flex-row">
           {row.map((column, indexColumn) => (
