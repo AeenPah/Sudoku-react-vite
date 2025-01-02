@@ -13,6 +13,7 @@ function SudokuPuzzle(): JSX.Element {
   /*                                    States                                  */
   /* -------------------------------------------------------------------------- */
 
+  // TODO: change this to a Ref or add to cell status
   const [numberGrid, setNumberGrid] = useState<TNumberGrid>(initialNumberGrid);
   const [cellStatus, setCellStatus] =
     useState<TCellStatusList>(initialCellStatus);
@@ -50,14 +51,14 @@ function SudokuPuzzle(): JSX.Element {
     innerCell: number,
     hasError: boolean
   ): void {
-    const updatedCells = cellStatus;
-
-    updatedCells[row][column][innerCell] = {
-      ...updatedCells[row][column][innerCell],
-      status: !hasError,
-    };
-
-    setCellStatus(updatedCells);
+    setCellStatus((prev) => {
+      const newStatus = JSON.parse(JSON.stringify(prev)); // Deep copy
+      newStatus[row][column][innerCell] = {
+        ...prev[row][column][innerCell],
+        status: !hasError,
+      };
+      return newStatus;
+    });
   }
 
   function refreshInvalidCells(): void {
@@ -128,19 +129,19 @@ function SudokuPuzzle(): JSX.Element {
     return errorCells.length > 0;
   }
 
-  function validateAndUpdateCell(
+  async function validateAndUpdateCell(
     row: number,
     column: number,
     cell: number,
     value: string,
     clearErrors: boolean
-  ): void {
+  ) {
     if (!value) return;
 
     const hasError = checkForDuplicates(row, column, cell, value);
 
     // set value to the right place at the state.
-    setNumberGrid((prev) => {
+    await setNumberGrid((prev) => {
       prev[row][column][cell] = value;
 
       return [...prev];
