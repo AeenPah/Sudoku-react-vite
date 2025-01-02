@@ -49,7 +49,7 @@ function SudokuPuzzle(): JSX.Element {
     row: number,
     column: number,
     innerCell: number,
-    hasError: boolean
+    hasError: boolean,
   ): void {
     setCellStatus((prev) => {
       const newStatus = JSON.parse(JSON.stringify(prev)); // Deep copy
@@ -71,8 +71,8 @@ function SudokuPuzzle(): JSX.Element {
             innerCellIndex,
             isError: !innerCell.status,
           }))
-          .filter((cell) => cell.isError)
-      )
+          .filter((cell) => cell.isError),
+      ),
     );
 
     errorCells.forEach(({ rowIndex, columnIndex, innerCellIndex }) => {
@@ -81,7 +81,7 @@ function SudokuPuzzle(): JSX.Element {
         columnIndex,
         innerCellIndex,
         numberGrid[rowIndex][columnIndex][innerCellIndex],
-        false
+        false,
       );
     });
   }
@@ -90,7 +90,7 @@ function SudokuPuzzle(): JSX.Element {
     row: number,
     column: number,
     cell: number,
-    inputValue: string
+    inputValue: string,
   ): boolean {
     const updatedGrid: TNumberGrid = JSON.parse(JSON.stringify(numberGrid));
     const errorCells: {
@@ -117,13 +117,13 @@ function SudokuPuzzle(): JSX.Element {
             ) {
               errorCells.push({ rowIndex, columnIndex, cellIndex });
             }
-          })
-        )
+          }),
+        ),
       );
     });
 
     errorCells.forEach(({ rowIndex, columnIndex, cellIndex }) =>
-      updateCellStatus(rowIndex, columnIndex, cellIndex, true)
+      updateCellStatus(rowIndex, columnIndex, cellIndex, true),
     );
 
     return errorCells.length > 0;
@@ -134,7 +134,7 @@ function SudokuPuzzle(): JSX.Element {
     column: number,
     cell: number,
     value: string,
-    clearErrors: boolean
+    clearErrors: boolean,
   ) {
     if (!value) return;
 
@@ -152,13 +152,13 @@ function SudokuPuzzle(): JSX.Element {
   }
 
   return (
-    <div className="flex flex-col bg-sky-200 w-[586px]">
+    <div className="flex w-[586px] flex-col bg-sky-200">
       {cellStatus.map((row, indexRow) => (
         <div key={indexRow} className="flex flex-row">
           {row.map((column, indexColumn) => (
             <div
               key={`${indexRow}-${indexColumn}`}
-              className="flex flex-wrap box-border border-2 border-black divide-x divide-y divide-gray-600"
+              className="box-border flex flex-wrap divide-x divide-y divide-gray-600 border-2 border-black"
             >
               {column.map((innerCell, indexInnerCell) => (
                 <input
@@ -173,7 +173,7 @@ function SudokuPuzzle(): JSX.Element {
                       indexColumn,
                       indexInnerCell,
                       event.target.value,
-                      true
+                      true,
                     );
                   }}
                   className={`h-16 w-16 text-center text-3xl ${
