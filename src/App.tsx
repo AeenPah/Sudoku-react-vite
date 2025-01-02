@@ -1,10 +1,9 @@
 import "./App.css";
 import SudokuPuzzle from "./components/SudokuPuzzle/SudokuPuzzle";
-import "./output.css";
 
 function App(): JSX.Element {
   return (
-    <div className="flex flex-col gap-5 items-center">
+    <div className="flex flex-col items-center gap-5">
       <h1 className="text-5xl font-bold">Sudoku</h1>
 
       <SudokuPuzzle />
