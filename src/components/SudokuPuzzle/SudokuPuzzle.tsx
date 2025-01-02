@@ -176,8 +176,11 @@ function SudokuPuzzle(): JSX.Element {
                       true
                     );
                   }}
-                  className={`h-16 w-16 text-center text-2xl ${
-                    !innerCell.status && "bg-red-400"
+                  className={`h-16 w-16 text-center text-3xl ${
+                    innerCell.changeable && "font-bold"
+                  } ${
+                    !innerCell.status &&
+                    (innerCell.changeable ? "bg-red-300" : "bg-red-400")
                   }`}
                 />
               ))}
