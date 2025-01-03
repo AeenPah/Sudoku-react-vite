@@ -152,42 +152,50 @@ function SudokuPuzzle(): JSX.Element {
   }
 
   return (
-    <div className="flex w-[586px] flex-col bg-sky-200">
-      {cellStatus.map((row, indexRow) => (
-        <div key={indexRow} className="flex flex-row">
-          {row.map((column, indexColumn) => (
-            <div
-              key={`${indexRow}-${indexColumn}`}
-              className="box-border flex flex-wrap divide-x divide-y divide-gray-600 border-2 border-black"
-            >
-              {column.map((innerCell, indexInnerCell) => (
-                <input
-                  key={`${indexRow}-${indexColumn}-${indexInnerCell}`}
-                  disabled={innerCell.changeable}
-                  type="text"
-                  value={numberGrid[indexRow][indexColumn][indexInnerCell]}
-                  onChange={(event) => {
-                    restrictToSingleDigit(event);
-                    validateAndUpdateCell(
-                      indexRow,
-                      indexColumn,
-                      indexInnerCell,
-                      event.target.value,
-                      true,
-                    );
-                  }}
-                  className={`h-[64px] w-[64px] text-center text-3xl ${
-                    innerCell.changeable && "font-bold"
-                  } ${
-                    !innerCell.status &&
-                    (innerCell.changeable ? "bg-red-300" : "bg-red-400")
-                  }`}
-                />
+    <div className="mx-auto w-full max-w-[586px]">
+      <table className="w-full table-fixed border-collapse">
+        <tbody>
+          {cellStatus.map((row, indexRow) => (
+            <tr key={indexRow}>
+              {row.map((column, indexColumn) => (
+                <td
+                  key={`${indexRow}-${indexColumn}`}
+                  className="border-[3px] border-sky-900 p-0"
+                >
+                  <div className="grid grid-cols-3 gap-0">
+                    {column.map((innerCell, indexInnerCell) => (
+                      <input
+                        key={`${indexRow}-${indexColumn}-${indexInnerCell}`}
+                        disabled={innerCell.changeable}
+                        type="tel"
+                        value={
+                          numberGrid[indexRow][indexColumn][indexInnerCell]
+                        }
+                        onChange={(event) => {
+                          restrictToSingleDigit(event);
+                          validateAndUpdateCell(
+                            indexRow,
+                            indexColumn,
+                            indexInnerCell,
+                            event.target.value,
+                            true,
+                          );
+                        }}
+                        className={`aspect-square border border-sky-300 text-center text-3xl disabled:bg-sky-100 ${
+                          innerCell.changeable && "font-bold"
+                        } ${
+                          !innerCell.status &&
+                          (innerCell.changeable ? "bg-red-300" : "bg-red-400")
+                        }`}
+                      />
+                    ))}
+                  </div>
+                </td>
               ))}
-            </div>
+            </tr>
           ))}
-        </div>
-      ))}
+        </tbody>
+      </table>
     </div>
   );
 }
