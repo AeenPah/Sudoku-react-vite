@@ -181,11 +181,14 @@ function SudokuPuzzle(): JSX.Element {
                             true,
                           );
                         }}
-                        className={`aspect-square border border-sky-300 text-center text-3xl disabled:bg-sky-100 ${
+                        className={`aspect-square border border-sky-300 text-center text-3xl ${
                           innerCell.changeable && "font-bold"
                         } ${
-                          !innerCell.status &&
-                          (innerCell.changeable ? "bg-red-300" : "bg-red-400")
+                          innerCell.status
+                            ? "disabled:bg-sky-100"
+                            : innerCell.changeable
+                              ? "bg-red-300"
+                              : "bg-red-400"
                         }`}
                       />
                     ))}
