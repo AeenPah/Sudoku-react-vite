@@ -6,7 +6,6 @@ import {
   initialNumberGrid,
   validationRules,
 } from "./SudokuPuzzle.const";
-import restrictToSingleDigit from "../../utils/restrictToSingleDigit";
 
 function SudokuPuzzle(): JSX.Element {
   /* -------------------------------------------------------------------------- */
@@ -99,28 +98,30 @@ function SudokuPuzzle(): JSX.Element {
       cellIndex: number;
     }[] = [];
 
-    validationRules.forEach(({ checkFn }) => {
-      updatedGrid.forEach((r, rowIndex) =>
-        r.forEach((c, columnIndex) =>
-          c.forEach((ce, cellIndex) => {
-            // avoid check cell with its own cell value
-            if (
-              row === rowIndex &&
-              column === columnIndex &&
-              cell === cellIndex
-            )
-              return;
+    if (inputValue) {
+      validationRules.forEach(({ checkFn }) => {
+        updatedGrid.forEach((r, rowIndex) =>
+          r.forEach((c, columnIndex) =>
+            c.forEach((ce, cellIndex) => {
+              // avoid check cell with its own cell value
+              if (
+                row === rowIndex &&
+                column === columnIndex &&
+                cell === cellIndex
+              )
+                return;
 
-            if (
-              checkFn(row, column, cell, rowIndex, columnIndex, cellIndex) &&
-              ce === inputValue
-            ) {
-              errorCells.push({ rowIndex, columnIndex, cellIndex });
-            }
-          }),
-        ),
-      );
-    });
+              if (
+                checkFn(row, column, cell, rowIndex, columnIndex, cellIndex) &&
+                ce === inputValue
+              ) {
+                errorCells.push({ rowIndex, columnIndex, cellIndex });
+              }
+            }),
+          ),
+        );
+      });
+    }
 
     errorCells.forEach(({ rowIndex, columnIndex, cellIndex }) =>
       updateCellStatus(rowIndex, columnIndex, cellIndex, true),
@@ -136,8 +137,6 @@ function SudokuPuzzle(): JSX.Element {
     value: string,
     clearErrors: boolean,
   ) {
-    if (!value) return;
-
     const hasError = checkForDuplicates(row, column, cell, value);
 
     // set value to the right place at the state.
@@ -171,8 +170,8 @@ function SudokuPuzzle(): JSX.Element {
                         value={
                           numberGrid[indexRow][indexColumn][indexInnerCell]
                         }
+                        maxLength={1}
                         onChange={(event) => {
-                          restrictToSingleDigit(event);
                           validateAndUpdateCell(
                             indexRow,
                             indexColumn,
