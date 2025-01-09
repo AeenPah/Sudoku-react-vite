@@ -1,9 +1,8 @@
 import { useEffect, useState } from "react";
-import { TCellStatusList, TNumberGrid } from "./SudokuPuzzle.type";
+import { TCellStatusList } from "./SudokuPuzzle.type";
 import {
   answer,
   initialCellStatus,
-  initialNumberGrid,
   validationRules,
 } from "./SudokuPuzzle.const";
 
@@ -12,8 +11,6 @@ function SudokuPuzzle(): JSX.Element {
   /*                                    States                                  */
   /* -------------------------------------------------------------------------- */
 
-  // TODO: change this to a Ref or add to cell status
-  const [numberGrid, setNumberGrid] = useState<TNumberGrid>(initialNumberGrid);
   const [cellStatus, setCellStatus] =
     useState<TCellStatusList>(initialCellStatus);
 
@@ -21,20 +18,14 @@ function SudokuPuzzle(): JSX.Element {
   /*                                   Effect                                   */
   /* -------------------------------------------------------------------------- */
 
-  // TODO: May change this by update states
   useEffect(() => {
     const tempCellStatus = cellStatus;
     answer.forEach((item) => {
       tempCellStatus[item[0]][item[1]][item[2]] = {
         status: true,
         changeable: true,
+        value: item[3],
       };
-
-      setNumberGrid((prev) => {
-        prev[item[0]][item[1]][item[2]] = item[3];
-
-        return [...prev];
-      });
     });
 
     setCellStatus(tempCellStatus);
@@ -79,7 +70,7 @@ function SudokuPuzzle(): JSX.Element {
         rowIndex,
         columnIndex,
         innerCellIndex,
-        numberGrid[rowIndex][columnIndex][innerCellIndex],
+        cellStatus[rowIndex][columnIndex][innerCellIndex].value,
         false,
       );
     });
@@ -91,7 +82,7 @@ function SudokuPuzzle(): JSX.Element {
     cell: number,
     inputValue: string,
   ): boolean {
-    const updatedGrid: TNumberGrid = JSON.parse(JSON.stringify(numberGrid));
+    const updatedGrid: TCellStatusList = JSON.parse(JSON.stringify(cellStatus));
     const errorCells: {
       rowIndex: number;
       columnIndex: number;
@@ -113,7 +104,7 @@ function SudokuPuzzle(): JSX.Element {
 
               if (
                 checkFn(row, column, cell, rowIndex, columnIndex, cellIndex) &&
-                ce === inputValue
+                ce.value === inputValue
               ) {
                 errorCells.push({ rowIndex, columnIndex, cellIndex });
               }
@@ -140,8 +131,8 @@ function SudokuPuzzle(): JSX.Element {
     const hasError = checkForDuplicates(row, column, cell, value);
 
     // set value to the right place at the state.
-    await setNumberGrid((prev) => {
-      prev[row][column][cell] = value;
+    await setCellStatus((prev) => {
+      prev[row][column][cell].value = value;
 
       return [...prev];
     });
@@ -151,7 +142,13 @@ function SudokuPuzzle(): JSX.Element {
   }
 
   return (
-    <div className="mx-auto w-full max-w-[586px]">
+    <div className="mx-auto flex w-full max-w-[586px] flex-col gap-2">
+      <button
+        className="w-fit rounded bg-sky-700 px-4 py-2 font-bold text-white hover:bg-sky-900"
+        onClick={() => setCellStatus(initialCellStatus)}
+      >
+        Reset
+      </button>
       <table className="w-full table-fixed border-collapse">
         <tbody>
           {cellStatus.map((row, indexRow) => (
@@ -167,9 +164,7 @@ function SudokuPuzzle(): JSX.Element {
                         key={`${indexRow}-${indexColumn}-${indexInnerCell}`}
                         disabled={innerCell.changeable}
                         type="tel"
-                        value={
-                          numberGrid[indexRow][indexColumn][indexInnerCell]
-                        }
+                        value={innerCell.value}
                         maxLength={1}
                         onChange={(event) => {
                           validateAndUpdateCell(
