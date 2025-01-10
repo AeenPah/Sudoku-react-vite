@@ -8,7 +8,7 @@ import {
 
 function SudokuPuzzle(): JSX.Element {
   /* -------------------------------------------------------------------------- */
-  /*                                    States                                  */
+  /*                                    State                                   */
   /* -------------------------------------------------------------------------- */
 
   const [cellStatus, setCellStatus] =
@@ -19,16 +19,18 @@ function SudokuPuzzle(): JSX.Element {
   /* -------------------------------------------------------------------------- */
 
   useEffect(() => {
-    const tempCellStatus = cellStatus;
-    answer.forEach((item) => {
-      tempCellStatus[item[0]][item[1]][item[2]] = {
-        status: true,
-        changeable: true,
-        value: item[3],
-      };
-    });
+    setCellStatus((prev) => {
+      const updatedCellStatus = structuredClone(prev); // Deep copy
+      answer.forEach(([row, col, cell, value]) => {
+        updatedCellStatus[row][col][cell] = {
+          status: true,
+          changeable: true,
+          value: value,
+        };
+      });
 
-    setCellStatus(tempCellStatus);
+      return updatedCellStatus;
+    });
   }, []);
 
   /* -------------------------------------------------------------------------- */
@@ -42,7 +44,7 @@ function SudokuPuzzle(): JSX.Element {
     hasError: boolean,
   ): void {
     setCellStatus((prev) => {
-      const newStatus = JSON.parse(JSON.stringify(prev)); // Deep copy
+      const newStatus = structuredClone(prev); // Deep copy
       newStatus[row][column][innerCell] = {
         ...prev[row][column][innerCell],
         status: !hasError,
@@ -82,7 +84,7 @@ function SudokuPuzzle(): JSX.Element {
     cell: number,
     inputValue: string,
   ): boolean {
-    const updatedGrid: TCellStatusList = JSON.parse(JSON.stringify(cellStatus));
+    const updatedGrid: TCellStatusList = structuredClone(cellStatus); // Deep copy
     const errorCells: {
       rowIndex: number;
       columnIndex: number;
