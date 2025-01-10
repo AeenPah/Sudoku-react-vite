@@ -129,12 +129,17 @@ function SudokuPuzzle(): JSX.Element {
     cell: number,
     value: string,
     clearErrors: boolean,
-  ) {
+  ): Promise<void> {
+    if (!RegExp(/^[1-9]*$/).test(value)) return;
+
     const hasError = checkForDuplicates(row, column, cell, value);
 
     // set value to the right place at the state.
     await setCellStatus((prev) => {
-      prev[row][column][cell].value = value;
+      prev[row][column][cell] = {
+        ...prev[row][column][cell],
+        value,
+      };
 
       return [...prev];
     });
