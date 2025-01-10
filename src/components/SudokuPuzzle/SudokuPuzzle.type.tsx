@@ -1,5 +1,7 @@
-export type TCellStatus = { status: boolean; changeable: boolean };
+export type TCellStatus = {
+  status: boolean;
+  changeable: boolean;
+  value: string;
+};
 
 export type TCellStatusList = TCellStatus[][][];
-
-export type TNumberGrid = string[][][];

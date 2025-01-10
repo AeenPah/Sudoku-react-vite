@@ -1,23 +1,15 @@
-import { TCellStatusList, TNumberGrid } from "./SudokuPuzzle.type";
+import { TCellStatusList } from "./SudokuPuzzle.type";
 
 /* -------------------------------------------------------------------------- */
-/*                                  Initials                                  */
+/*                                  Initial                                   */
 /* -------------------------------------------------------------------------- */
-
-export const initialNumberGrid: TNumberGrid = Array(3)
-  .fill(0)
-  .map(() =>
-    Array(3)
-      .fill(0)
-      .map(() => Array(9).fill(""))
-  );
 
 export const initialCellStatus: TCellStatusList = Array(3)
   .fill(0)
   .map(() =>
     Array(3)
       .fill(0)
-      .map(() => Array(9).fill({ status: true }))
+      .map(() => Array(9).fill({ status: true, value: "" })),
   );
 
 /* -------------------------------------------------------------------------- */
@@ -31,7 +23,7 @@ const sameBox = (
   rowIndex: number,
   columnIndex: number,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  _cellIndex: number
+  _cellIndex: number,
 ) => row === rowIndex && column === columnIndex;
 const sameColumn = (
   _row: number,
@@ -39,7 +31,7 @@ const sameColumn = (
   cell: number,
   _rowIndex: number,
   columnIndex: number,
-  cellIndex: number
+  cellIndex: number,
 ) => column === columnIndex && cell % 3 === cellIndex % 3;
 const sameRow = (
   row: number,
@@ -47,7 +39,7 @@ const sameRow = (
   cell: number,
   rowIndex: number,
   _columnIndex: number,
-  cellIndex: number
+  cellIndex: number,
 ) =>
   row === rowIndex &&
   ((cell < 3 && cellIndex < 3) ||

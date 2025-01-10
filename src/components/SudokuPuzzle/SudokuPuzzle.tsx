@@ -1,20 +1,16 @@
 import { useEffect, useState } from "react";
-import { TCellStatusList, TNumberGrid } from "./SudokuPuzzle.type";
+import { TCellStatusList } from "./SudokuPuzzle.type";
 import {
   answer,
   initialCellStatus,
-  initialNumberGrid,
   validationRules,
 } from "./SudokuPuzzle.const";
-import restrictToSingleDigit from "../../utils/restrictToSingleDigit";
 
 function SudokuPuzzle(): JSX.Element {
   /* -------------------------------------------------------------------------- */
-  /*                                    States                                  */
+  /*                                    State                                   */
   /* -------------------------------------------------------------------------- */
 
-  // TODO: change this to a Ref or add to cell status
-  const [numberGrid, setNumberGrid] = useState<TNumberGrid>(initialNumberGrid);
   const [cellStatus, setCellStatus] =
     useState<TCellStatusList>(initialCellStatus);
 
@@ -22,23 +18,19 @@ function SudokuPuzzle(): JSX.Element {
   /*                                   Effect                                   */
   /* -------------------------------------------------------------------------- */
 
-  // TODO: May change this by update states
   useEffect(() => {
-    const tempCellStatus = cellStatus;
-    answer.forEach((item) => {
-      tempCellStatus[item[0]][item[1]][item[2]] = {
-        status: true,
-        changeable: true,
-      };
-
-      setNumberGrid((prev) => {
-        prev[item[0]][item[1]][item[2]] = item[3];
-
-        return [...prev];
+    setCellStatus((prev) => {
+      const updatedCellStatus = structuredClone(prev); // Deep copy
+      answer.forEach(([row, col, cell, value]) => {
+        updatedCellStatus[row][col][cell] = {
+          status: true,
+          changeable: true,
+          value: value,
+        };
       });
-    });
 
-    setCellStatus(tempCellStatus);
+      return updatedCellStatus;
+    });
   }, []);
 
   /* -------------------------------------------------------------------------- */
@@ -52,7 +44,7 @@ function SudokuPuzzle(): JSX.Element {
     hasError: boolean,
   ): void {
     setCellStatus((prev) => {
-      const newStatus = JSON.parse(JSON.stringify(prev)); // Deep copy
+      const newStatus = structuredClone(prev); // Deep copy
       newStatus[row][column][innerCell] = {
         ...prev[row][column][innerCell],
         status: !hasError,
@@ -80,7 +72,7 @@ function SudokuPuzzle(): JSX.Element {
         rowIndex,
         columnIndex,
         innerCellIndex,
-        numberGrid[rowIndex][columnIndex][innerCellIndex],
+        cellStatus[rowIndex][columnIndex][innerCellIndex].value,
         false,
       );
     });
@@ -92,35 +84,37 @@ function SudokuPuzzle(): JSX.Element {
     cell: number,
     inputValue: string,
   ): boolean {
-    const updatedGrid: TNumberGrid = JSON.parse(JSON.stringify(numberGrid));
+    const updatedGrid: TCellStatusList = structuredClone(cellStatus); // Deep copy
     const errorCells: {
       rowIndex: number;
       columnIndex: number;
       cellIndex: number;
     }[] = [];
 
-    validationRules.forEach(({ checkFn }) => {
-      updatedGrid.forEach((r, rowIndex) =>
-        r.forEach((c, columnIndex) =>
-          c.forEach((ce, cellIndex) => {
-            // avoid check cell with its own cell value
-            if (
-              row === rowIndex &&
-              column === columnIndex &&
-              cell === cellIndex
-            )
-              return;
+    if (inputValue) {
+      validationRules.forEach(({ checkFn }) => {
+        updatedGrid.forEach((r, rowIndex) =>
+          r.forEach((c, columnIndex) =>
+            c.forEach((ce, cellIndex) => {
+              // avoid check cell with its own cell value
+              if (
+                row === rowIndex &&
+                column === columnIndex &&
+                cell === cellIndex
+              )
+                return;
 
-            if (
-              checkFn(row, column, cell, rowIndex, columnIndex, cellIndex) &&
-              ce === inputValue
-            ) {
-              errorCells.push({ rowIndex, columnIndex, cellIndex });
-            }
-          }),
-        ),
-      );
-    });
+              if (
+                checkFn(row, column, cell, rowIndex, columnIndex, cellIndex) &&
+                ce.value === inputValue
+              ) {
+                errorCells.push({ rowIndex, columnIndex, cellIndex });
+              }
+            }),
+          ),
+        );
+      });
+    }
 
     errorCells.forEach(({ rowIndex, columnIndex, cellIndex }) =>
       updateCellStatus(rowIndex, columnIndex, cellIndex, true),
@@ -136,13 +130,11 @@ function SudokuPuzzle(): JSX.Element {
     value: string,
     clearErrors: boolean,
   ) {
-    if (!value) return;
-
     const hasError = checkForDuplicates(row, column, cell, value);
 
     // set value to the right place at the state.
-    await setNumberGrid((prev) => {
-      prev[row][column][cell] = value;
+    await setCellStatus((prev) => {
+      prev[row][column][cell].value = value;
 
       return [...prev];
     });
@@ -152,7 +144,13 @@ function SudokuPuzzle(): JSX.Element {
   }
 
   return (
-    <div className="mx-auto w-full max-w-[586px]">
+    <div className="mx-auto flex w-full max-w-[586px] flex-col gap-2">
+      <button
+        className="w-fit rounded bg-sky-700 px-4 py-2 font-bold text-white hover:bg-sky-900"
+        onClick={() => setCellStatus(initialCellStatus)}
+      >
+        Reset
+      </button>
       <table className="w-full table-fixed border-collapse">
         <tbody>
           {cellStatus.map((row, indexRow) => (
@@ -168,11 +166,9 @@ function SudokuPuzzle(): JSX.Element {
                         key={`${indexRow}-${indexColumn}-${indexInnerCell}`}
                         disabled={innerCell.changeable}
                         type="tel"
-                        value={
-                          numberGrid[indexRow][indexColumn][indexInnerCell]
-                        }
+                        value={innerCell.value}
+                        maxLength={1}
                         onChange={(event) => {
-                          restrictToSingleDigit(event);
                           validateAndUpdateCell(
                             indexRow,
                             indexColumn,
