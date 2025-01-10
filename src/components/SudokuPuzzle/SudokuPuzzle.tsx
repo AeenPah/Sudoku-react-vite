@@ -134,7 +134,10 @@ function SudokuPuzzle(): JSX.Element {
 
     // set value to the right place at the state.
     await setCellStatus((prev) => {
-      prev[row][column][cell].value = value;
+      prev[row][column][cell] = {
+        ...prev[row][column][cell],
+        value,
+      };
 
       return [...prev];
     });
