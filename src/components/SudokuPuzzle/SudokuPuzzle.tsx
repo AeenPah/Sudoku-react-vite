@@ -15,27 +15,21 @@ function SudokuPuzzle(): JSX.Element {
     useState<TCellStatusList>(initialCellStatus);
 
   /* -------------------------------------------------------------------------- */
-  /*                                   Effect                                   */
-  /* -------------------------------------------------------------------------- */
-
-  useEffect(() => {
-    setCellStatus((prev) => {
-      const updatedCellStatus = structuredClone(prev); // Deep copy
-      answer.forEach(([row, col, cell, value]) => {
-        updatedCellStatus[row][col][cell] = {
-          status: true,
-          changeable: true,
-          value: value,
-        };
-      });
-
-      return updatedCellStatus;
-    });
-  }, []);
-
-  /* -------------------------------------------------------------------------- */
   /*                                  Functions                                 */
   /* -------------------------------------------------------------------------- */
+
+  function setInitialValueToPuzzle() {
+    const updatedCellStatus = structuredClone(initialCellStatus); // Deep copy
+    answer.forEach(([row, col, cell, value]) => {
+      updatedCellStatus[row][col][cell] = {
+        status: true,
+        changeable: true,
+        value: value,
+      };
+    });
+
+    setCellStatus(updatedCellStatus);
+  }
 
   function updateCellStatus(
     row: number,
@@ -148,11 +142,19 @@ function SudokuPuzzle(): JSX.Element {
     if (clearErrors) refreshInvalidCells();
   }
 
+  /* -------------------------------------------------------------------------- */
+  /*                                   Effect                                   */
+  /* -------------------------------------------------------------------------- */
+
+  useEffect(() => {
+    setInitialValueToPuzzle();
+  }, []);
+
   return (
     <div className="mx-auto flex w-full max-w-[586px] flex-col gap-2">
       <button
         className="w-fit rounded bg-sky-700 px-4 py-2 font-bold text-white hover:bg-sky-900"
-        onClick={() => setCellStatus(initialCellStatus)}
+        onClick={() => setInitialValueToPuzzle()}
       >
         Reset
       </button>
