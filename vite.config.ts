@@ -21,7 +21,8 @@ export default defineConfig({
           {
             src: "/app-icon.png",
             type: "image/png",
-            purpose: "maskable",
+            sizes: "512x512",
+            purpose: "any maskable",
           },
         ],
       },
