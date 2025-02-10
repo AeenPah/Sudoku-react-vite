@@ -13,7 +13,7 @@ export default defineConfig({
         short_name: "BlueSu",
         background_color: "#0C4A6E",
         categories: ["entertainment", "games"],
-        theme_color: "#ffffff",
+        theme_color: "#0C4A6E",
         orientation: "natural",
         description:
           "Sudoku puzzle to challenge yourself and trick a little bit your brain. ",
