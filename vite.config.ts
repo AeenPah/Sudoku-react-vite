@@ -9,8 +9,21 @@ export default defineConfig({
     VitePWA({
       registerType: "autoUpdate",
       manifest: {
-        name: "Sudoku Puzzle",
+        name: "Blue Sudoku",
+        short_name: "BlueSu",
+        background_color: "lightblue",
+        categories: ["entertainment", "games"],
         theme_color: "#ffffff",
+        orientation: "natural",
+        description:
+          "Sudoku puzzle to challenge yourself and trick a little bit your brain. ",
+        icons: [
+          {
+            src: "app-icon.png",
+            type: "image/png",
+            purpose: "maskable",
+          },
+        ],
       },
     }),
   ],
