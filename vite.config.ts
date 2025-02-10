@@ -19,7 +19,7 @@ export default defineConfig({
           "Sudoku puzzle to challenge yourself and trick a little bit your brain. ",
         icons: [
           {
-            src: "app-icon.png",
+            src: "/app-icon.png",
             type: "image/png",
             purpose: "maskable",
           },
