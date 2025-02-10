@@ -11,7 +11,7 @@ export default defineConfig({
       manifest: {
         name: "Blue Sudoku",
         short_name: "BlueSu",
-        background_color: "lightblue",
+        background_color: "#0C4A6E",
         categories: ["entertainment", "games"],
         theme_color: "#ffffff",
         orientation: "natural",
