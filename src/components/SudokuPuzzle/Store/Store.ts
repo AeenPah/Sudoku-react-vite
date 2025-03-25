@@ -1,8 +1,20 @@
 export type TLevels =
-  | "easyAsHell"
-  | "hardALittle"
-  | "extremeHard"
-  | "fuckingImpossible";
+  | "Easy Peasy Lemon Squeezy"
+  | "Meh Not So Hard"
+  | "Okay This Is Tough";
+// | "Fucking Impossible";
+
+// | "EasyPeasyLemonSqueezy"
+// | "MehNotSoHard"
+// | "OkayThisIsTough"
+// | "WhyDidIDoThis"
+// | "RageQuitIncoming"
+// | "SendHelp"
+// | "IRegretEverything"
+// | "ThisIsNotPossible"
+// | "DeveloperHatesYou"
+// | "DarkSoulsOfPuzzles";
+
 type TPreFilled = [number, number, number, string][];
 type TPreFilledSudokuLevels = {
   [key in TLevels]: TPreFilled;
@@ -108,8 +120,8 @@ const preFilledEasy: TPreFilled = [
 ];
 
 export const preFilledSudokuLevels: TPreFilledSudokuLevels = {
-  easyAsHell: preFilledEasy,
-  hardALittle: preFilledHard,
-  extremeHard: preFilledExtreme,
-  fuckingImpossible: [],
+  "Easy Peasy Lemon Squeezy": preFilledEasy,
+  "Meh Not So Hard": preFilledHard,
+  "Okay This Is Tough": preFilledExtreme,
+  // "Fucking Impossible": [],
 };
