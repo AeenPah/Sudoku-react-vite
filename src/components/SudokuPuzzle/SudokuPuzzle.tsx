@@ -1,10 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { initialCellStatus, validationRules } from "./SudokuPuzzle.const";
+import { preFilledSudokuLevels, TLevels } from "./Store/Store";
 import { TCellStatusList } from "./SudokuPuzzle.type";
-import {
-  answer,
-  initialCellStatus,
-  validationRules,
-} from "./SudokuPuzzle.const";
+import Popup from "./Popup/popup";
 
 function SudokuPuzzle(): JSX.Element {
   /* -------------------------------------------------------------------------- */
@@ -18,9 +16,9 @@ function SudokuPuzzle(): JSX.Element {
   /*                                  Functions                                 */
   /* -------------------------------------------------------------------------- */
 
-  function setInitialValueToPuzzle() {
+  function setInitialValueToPuzzle(level: TLevels) {
     const updatedCellStatus = structuredClone(initialCellStatus); // Deep copy
-    answer.forEach(([row, col, cell, value]) => {
+    preFilledSudokuLevels[level].forEach(([row, col, cell, value]) => {
       updatedCellStatus[row][col][cell] = {
         status: true,
         changeable: true,
@@ -142,19 +140,13 @@ function SudokuPuzzle(): JSX.Element {
     if (clearErrors) refreshInvalidCells();
   }
 
-  /* -------------------------------------------------------------------------- */
-  /*                                   Effect                                   */
-  /* -------------------------------------------------------------------------- */
-
-  useEffect(() => {
-    setInitialValueToPuzzle();
-  }, []);
-
   return (
     <div className="mx-auto flex w-full max-w-[586px] flex-col gap-2">
+      <Popup initialPuzzle={(level) => setInitialValueToPuzzle(level)} />
+
       <button
         className="w-fit rounded bg-sky-700 px-4 py-2 font-bold text-white hover:bg-sky-900"
-        onClick={() => setInitialValueToPuzzle()}
+        // onClick={() => setInitialValueToPuzzle()}
       >
         Reset
       </button>
