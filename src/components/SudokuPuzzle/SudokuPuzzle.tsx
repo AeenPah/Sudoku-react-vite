@@ -96,7 +96,6 @@ function SudokuPuzzle(): JSX.Element {
                 cell === cellIndex
               )
                 return;
-
               if (
                 checkFn(row, column, cell, rowIndex, columnIndex, cellIndex) &&
                 ce.value === inputValue
@@ -141,23 +140,41 @@ function SudokuPuzzle(): JSX.Element {
     if (clearErrors) refreshInvalidCells();
   }
 
+  function handleDone() {
+    const isIncomplete = cellStatus.some((row) =>
+      row.some((cell) =>
+        cell.some(({ status, value }) => !status || value === ""),
+      ),
+    );
+
+    if (!isIncomplete) alert("Correct");
+    else alert("Wrong");
+  }
+
   return (
     <div className="mx-auto flex w-full max-w-[586px] flex-col gap-2">
       <Popup
-        initialPuzzle={(level) => {
-          setInitialValueToPuzzle(level);
-          setLevel(level);
+        initialPuzzle={(chosenLevel) => {
+          setInitialValueToPuzzle(chosenLevel);
+          setLevel(chosenLevel);
         }}
       />
       <div className="flex w-full justify-between">
         Difficulty Level: {level}
-        <button
-          className="bg-mainBlue hover:bg-darkBlue rounded px-4 py-2 font-bold text-white disabled:bg-gray-500"
-          disabled
-          // onClick={() => setInitialValueToPuzzle()}
-        >
-          Reset
-        </button>
+        <div>
+          <button
+            className="rounded bg-mainBlue px-4 py-2 font-bold text-white hover:bg-darkBlue disabled:bg-gray-500"
+            onClick={() => setInitialValueToPuzzle(level as TLevels)}
+          >
+            Reset
+          </button>
+          <button
+            className="ml-[10px] rounded bg-mainBlue px-4 py-2 font-bold text-white hover:bg-darkBlue disabled:bg-gray-500"
+            onClick={() => handleDone()}
+          >
+            Done
+          </button>
+        </div>
       </div>
       <table className="w-full table-fixed border-collapse">
         <tbody>
@@ -166,7 +183,7 @@ function SudokuPuzzle(): JSX.Element {
               {row.map((column, indexColumn) => (
                 <td
                   key={`${indexRow}-${indexColumn}`}
-                  className="border-mainBlue border-[3px] p-0"
+                  className="border-[3px] border-mainBlue p-0"
                 >
                   <div className="grid grid-cols-3 gap-0">
                     {column.map((innerCell, indexInnerCell) => (
@@ -185,7 +202,7 @@ function SudokuPuzzle(): JSX.Element {
                             true,
                           );
                         }}
-                        className={`border-lightBlue text-darkBlue aspect-square border text-center text-3xl ${
+                        className={`aspect-square border border-lightBlue text-center text-3xl text-darkBlue ${
                           innerCell.changeable && "font-bold"
                         } ${
                           innerCell.status
