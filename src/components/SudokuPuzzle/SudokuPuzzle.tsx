@@ -2,13 +2,15 @@ import { useState } from "react";
 import { initialCellStatus, validationRules } from "./SudokuPuzzle.const";
 import { preFilledSudokuLevels, TLevels } from "./Store/Store";
 import { TCellStatusList } from "./SudokuPuzzle.type";
-import Popup from "./Popup/popup";
+import PopupLevel from "./Popups/PopupLevel";
+import PopupResult from "./Popups/PopupResult";
 
 function SudokuPuzzle(): JSX.Element {
   /* -------------------------------------------------------------------------- */
   /*                                    States                                  */
   /* -------------------------------------------------------------------------- */
 
+  const [popupsStatus, setPopupsStatus] = useState<string | null>("popupLevel");
   const [level, setLevel] = useState<TLevels>();
   const [cellStatus, setCellStatus] =
     useState<TCellStatusList>(initialCellStatus);
@@ -141,24 +143,56 @@ function SudokuPuzzle(): JSX.Element {
   }
 
   function handleDone() {
+    if (!level) return;
     const isIncomplete = cellStatus.some((row) =>
       row.some((cell) =>
         cell.some(({ status, value }) => !status || value === ""),
       ),
     );
 
-    if (!isIncomplete) alert("Correct");
-    else alert("Wrong");
+    const popupStatuses = {
+      "Easy Peasy Lemon Squeezy": {
+        incomplete: "popupResultOpenEyes",
+        complete: "popupResultSolvedEasyMode",
+      },
+      "Meh Not So Hard": {
+        incomplete: "popupResultNotSoHard",
+        complete: "popupResultDidButNotSoHard",
+      },
+      "Okay This Is Tough": {
+        incomplete: "popupResultFilmingFighting",
+        complete: "popupResultFinallyDid",
+      },
+      "Fucking Impossible": {
+        incomplete: "popupResultImpossible",
+        complete: "",
+      },
+    };
+    const statusKey = isIncomplete ? "incomplete" : "complete";
+    if (popupStatuses[level] && popupStatuses[level][statusKey]) {
+      setPopupsStatus(popupStatuses[level][statusKey]);
+    }
   }
 
   return (
     <div className="mx-auto flex w-full max-w-[586px] flex-col gap-2">
-      <Popup
-        initialPuzzle={(chosenLevel) => {
-          setInitialValueToPuzzle(chosenLevel);
-          setLevel(chosenLevel);
-        }}
-      />
+      {popupsStatus === "popupLevel" ? (
+        <PopupLevel
+          initialPuzzle={(chosenLevel) => {
+            setInitialValueToPuzzle(chosenLevel);
+            setLevel(chosenLevel);
+            setPopupsStatus(null);
+          }}
+        />
+      ) : popupsStatus?.includes("popupResult") ? (
+        <PopupResult
+          result={popupsStatus.replace("popupResult", "")}
+          onClose={() => setPopupsStatus(null)}
+        />
+      ) : (
+        <></>
+      )}
+
       <div className="flex w-full justify-between">
         Difficulty Level: {level}
         <div>
