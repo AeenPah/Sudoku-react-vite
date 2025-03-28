@@ -19,8 +19,8 @@ To run the project locally, follow these steps:
 1. Clone the repository:
 
    ```sh
-   git clone https://github.com/yourusername/sudoku-puzzle.git
-   cd sudoku-puzzle
+   git clone https://github.com/AeenPah/Sudoku-react-vite.git
+   cd Sudoku-react-vite
    ```
 
 2. Install dependencies:
@@ -53,4 +53,3 @@ If you have any feedback or suggestions, feel free to open an issue or reach out
 ## License
 
 This project is open-source and available under the [MIT License](LICENSE).
-
